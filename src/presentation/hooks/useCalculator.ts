@@ -1,7 +1,17 @@
-import {useState} from 'react';
+import {useRef, useState} from 'react';
+
+enum Operator {
+  add,
+  subtract,
+  multiply,
+  divide,
+}
 
 export const useCalculator = () => {
   const [number, setNumber] = useState('0');
+  const [prevNumber, setPrevNumber] = useState('0');
+
+  const lastOperation = useRef<Operator>();
 
   const buildNumber = (textNumber: string) => {
     // Do not allow double point
@@ -24,6 +34,23 @@ export const useCalculator = () => {
     }
   };
 
+  const setLastNumber = () => {
+    if (number.endsWith('.')) {
+      setPrevNumber(number.slice(0, -1));
+    } else {
+      setPrevNumber(number);
+    }
+
+    setNumber('0');
+  };
+
+  const processOperation = (
+    operator: 'add' | 'subtract' | 'multiply' | 'divide',
+  ) => {
+    setLastNumber();
+    lastOperation.current = Operator[operator];
+  };
+
   const toggleNumberSign = () => {
     if (number.includes('-')) {
       setNumber(number.replace('-', ''));
@@ -34,6 +61,7 @@ export const useCalculator = () => {
 
   const clear = () => {
     setNumber('0');
+    setPrevNumber('0');
   };
 
   const deleteLast = () => {
@@ -49,10 +77,12 @@ export const useCalculator = () => {
   return {
     // properties
     number,
+    prevNumber,
 
     // methods
     buildNumber,
     toggleNumberSign,
+    processOperation,
     clear,
     deleteLast,
   };
