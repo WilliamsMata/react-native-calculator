@@ -11,6 +11,7 @@ export function CalculatorScreen() {
     buildNumber,
     toggleNumberSign,
     processOperation,
+    calculateResult,
     clear,
     deleteLast,
   } = useCalculator();
@@ -99,7 +100,7 @@ export function CalculatorScreen() {
         />
         <CalculatorButton onPress={() => buildNumber('.')} label="." />
         <CalculatorButton
-          onPress={() => console.log('=')}
+          onPress={calculateResult}
           label="="
           color={colors.orange}
         />

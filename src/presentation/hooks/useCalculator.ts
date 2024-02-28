@@ -51,6 +51,32 @@ export const useCalculator = () => {
     lastOperation.current = Operator[operator];
   };
 
+  const calculateResult = () => {
+    const numb1 = Number(number);
+    const numb2 = Number(prevNumber);
+
+    if (isNaN(numb1) || isNaN(numb2)) {
+      return;
+    }
+
+    switch (lastOperation.current) {
+      case Operator.add:
+        setNumber(`${numb1 + numb2}`);
+        break;
+      case Operator.subtract:
+        setNumber(`${numb2 - numb1}`);
+        break;
+      case Operator.multiply:
+        setNumber(`${numb1 * numb2}`);
+        break;
+      case Operator.divide:
+        setNumber(`${numb2 / numb1}`);
+        break;
+    }
+
+    setPrevNumber('0');
+  };
+
   const toggleNumberSign = () => {
     if (number.includes('-')) {
       setNumber(number.replace('-', ''));
@@ -83,6 +109,7 @@ export const useCalculator = () => {
     buildNumber,
     toggleNumberSign,
     processOperation,
+    calculateResult,
     clear,
     deleteLast,
   };
