@@ -1,17 +1,29 @@
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 enum Operator {
-  add,
-  subtract,
-  multiply,
-  divide,
+  add = '+',
+  subtract = '-',
+  multiply = '×',
+  divide = '÷',
 }
 
 export const useCalculator = () => {
+  const [formula, setFormula] = useState('');
+
   const [number, setNumber] = useState('0');
   const [prevNumber, setPrevNumber] = useState('0');
 
   const lastOperation = useRef<Operator>();
+
+  useEffect(() => {
+    if (lastOperation.current) {
+      const firstFormulaPart = formula.split(' ').at(0);
+      setFormula(`${firstFormulaPart} ${lastOperation.current} ${number}`);
+    } else {
+      setFormula(number);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [number]);
 
   const buildNumber = (textNumber: string) => {
     // Do not allow double point
@@ -52,29 +64,38 @@ export const useCalculator = () => {
   };
 
   const calculateResult = () => {
-    const numb1 = Number(number);
-    const numb2 = Number(prevNumber);
-
-    if (isNaN(numb1) || isNaN(numb2)) {
-      return;
-    }
-
-    switch (lastOperation.current) {
-      case Operator.add:
-        setNumber(`${numb1 + numb2}`);
-        break;
-      case Operator.subtract:
-        setNumber(`${numb2 - numb1}`);
-        break;
-      case Operator.multiply:
-        setNumber(`${numb1 * numb2}`);
-        break;
-      case Operator.divide:
-        setNumber(`${numb2 / numb1}`);
-        break;
-    }
-
+    const result = calculateSubResult();
+    setFormula(result.toString());
+    lastOperation.current = undefined;
     setPrevNumber('0');
+  };
+
+  const calculateSubResult = (): number => {
+    const [firstValue, operation, secondValue] = formula.split(' ');
+
+    const numb1 = Number(firstValue);
+    const numb2 = Number(secondValue);
+
+    if (isNaN(numb2)) {
+      return numb1;
+    }
+
+    switch (operation) {
+      case Operator.add:
+        return numb1 + numb2;
+
+      case Operator.subtract:
+        return numb1 - numb2;
+
+      case Operator.multiply:
+        return numb1 * numb2;
+
+      case Operator.divide:
+        return numb1 / numb2;
+
+      default:
+        return 0;
+    }
   };
 
   const toggleNumberSign = () => {
@@ -88,6 +109,8 @@ export const useCalculator = () => {
   const clear = () => {
     setNumber('0');
     setPrevNumber('0');
+    setFormula('');
+    lastOperation.current = undefined;
   };
 
   const deleteLast = () => {
@@ -102,6 +125,7 @@ export const useCalculator = () => {
 
   return {
     // properties
+    formula,
     number,
     prevNumber,
 
