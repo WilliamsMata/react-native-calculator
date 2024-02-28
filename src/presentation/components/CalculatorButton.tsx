@@ -7,6 +7,8 @@ interface CalculatorButtonProps {
   color?: string;
   dobleSize?: boolean;
   blackText?: boolean;
+
+  onPress: () => void;
 }
 
 export function CalculatorButton({
@@ -14,9 +16,11 @@ export function CalculatorButton({
   color,
   dobleSize = false,
   blackText = false,
+  onPress,
 }: CalculatorButtonProps) {
   return (
     <Pressable
+      onPress={onPress}
       style={({pressed}) => ({
         ...globalStyles.button,
         backgroundColor: color || globalStyles.button.backgroundColor,
