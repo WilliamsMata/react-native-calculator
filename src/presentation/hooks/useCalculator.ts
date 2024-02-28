@@ -25,6 +25,12 @@ export const useCalculator = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [number]);
 
+  useEffect(() => {
+    const subResult = calculateSubResult();
+    setPrevNumber(subResult.toString());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formula]);
+
   const buildNumber = (textNumber: string) => {
     // Do not allow double point
     if (number.includes('.') && textNumber === '.') {
@@ -60,6 +66,7 @@ export const useCalculator = () => {
     operator: 'add' | 'subtract' | 'multiply' | 'divide',
   ) => {
     setLastNumber();
+    calculateResult();
     lastOperation.current = Operator[operator];
   };
 

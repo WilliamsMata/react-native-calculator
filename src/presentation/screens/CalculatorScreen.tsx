@@ -26,11 +26,12 @@ export function CalculatorScreen() {
           style={globalStyles.mainResult}>
           {formula === '' ? '0' : formula}
         </Text>
+
         <Text
           adjustsFontSizeToFit
           numberOfLines={1}
           style={globalStyles.subResult}>
-          {prevNumber === '0' ? '' : prevNumber}
+          {formula === prevNumber ? '' : prevNumber === '0' ? '' : prevNumber}
         </Text>
       </View>
 
